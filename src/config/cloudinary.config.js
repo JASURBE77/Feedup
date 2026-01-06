@@ -26,7 +26,7 @@ const avatarStorage = new CloudinaryStorage({
   },
 });
 
-// Мультеры
+
 const upload = multer({ storage: postStorage });
 const uploadAvatar = multer({ storage: avatarStorage });
 
