@@ -30,7 +30,8 @@ const createProduct = async (req, res) => {
       price: numberPrice,
       category,
       pictures: urls,
-    });
+    }); 
+    
     product.save();
 
     if (!product) {
