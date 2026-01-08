@@ -23,6 +23,7 @@ const createProduct = async (req, res) => {
     }
 
     const urls = req.files.map((m) => m.path);
+    
     const numberPrice = Number(price);
     const product = new Product({
       title,
