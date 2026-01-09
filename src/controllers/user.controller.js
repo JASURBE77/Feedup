@@ -11,7 +11,7 @@ try {
     if(userExists) {
         return res.status(400).json({message: "Bunday foydalanuvchi mavjud"});
     }
-    const user = await User.create({name, surname, phone});
+    const user = await User.create({name, surname, phone, code});
     res.status(201).json(user);
 } catch (error) {
  res.status(500).json({message: error.message});   
@@ -30,5 +30,26 @@ exports.getMe = async (req, res) => {
   } catch (error) {
     console.error("GET ME ERROR:", error);
     return res.status(500).json({ message: "Server xatosi" });
+  }
+};
+exports.verifyCode = async (req, res) => {
+  try {
+    const { phone, code } = req.body;
+
+    const user = await User.findOne({ phone });
+
+    if (!user || user.code !== code) {
+      return res.status(400).json({ message: "Kod noto‘g‘ri" });
+    }
+
+    user.code = null;
+    user.isVerified = true;
+    await user.save();
+
+    return res.status(200).json({
+      message: "Tasdiqlandi ✅",
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };
