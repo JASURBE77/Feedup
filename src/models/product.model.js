@@ -14,7 +14,7 @@ const productShema = mongoose.Schema({
   ingredients: { type: String, default: "not added yet" },
   price: { type: Number, required: true },
   rating: { type: Number, default: 5 },
-  reviews: [{ type: Schema.Types.ObjectId, ref: "Reviews" }],
+  reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
 });
 
 const Product = mongoose.model("Product", productShema);
