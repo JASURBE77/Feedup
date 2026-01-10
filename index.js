@@ -5,10 +5,13 @@ const cors = require("cors");
 const UserRouter = require("./src/routes/user.routes");
 const connectDB = require("./src/config/db");
 const productRoutes = require("./src/routes/product.routes");
+const startBot  = require("./src/bot/verifyCode.bot");
+
 
 connectDB();
 app.use(express.json());
 app.use(cors());
+startBot();
 
 app.use("/", UserRouter, productRoutes);
 

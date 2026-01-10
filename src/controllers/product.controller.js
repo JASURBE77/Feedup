@@ -4,7 +4,7 @@ const User = require("../models/user.model");
 
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find().populate("reviews");
     res.json({ success: true, products });
   } catch (err) {
     console.log(err);
@@ -23,7 +23,7 @@ const createProduct = async (req, res) => {
     }
 
     const urls = req.files.map((m) => m.path);
-    
+
     const numberPrice = Number(price);
     const product = new Product({
       title,
@@ -31,8 +31,8 @@ const createProduct = async (req, res) => {
       price: numberPrice,
       category,
       pictures: urls,
-    }); 
-    
+    });
+
     product.save();
 
     if (!product) {
@@ -73,10 +73,14 @@ const addNewReview = async (req, res) => {
     }
 
     const photo = req.files[0].path;
-  
-    
-    
-    const review = new Review({ text, rating, photo:photo, productId, userId });
+
+    const review = new Review({
+      text,
+      rating,
+      photo: photo,
+      productId,
+      userId,
+    });
     review.save();
 
     const user = await User.findByIdAndUpdate(
@@ -85,10 +89,19 @@ const addNewReview = async (req, res) => {
         $push: { reviews: review._id },
       },
       { new: true }
+    ).populate("reviews");
+
+    const product = await Product.findByIdAndUpdate(
+      productId,
+      {
+        $push: { reviews: review._id },
+      },
+      {
+        new: true,
+      }
     );
 
-    res.json({success:true , user , review})
-
+    res.json({ success: true, user, review });
   } catch (err) {}
 };
 

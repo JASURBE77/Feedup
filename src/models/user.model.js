@@ -2,9 +2,9 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-    name: {type:String, required: true},
-    surname: {type:String, required: true},
-    phone: {type:Number, required: true , unique: true},
+    name: {type:String},
+    surname: {type:String},
+    phone: {type:String, required: true , unique: true},
   code: String,
   isVerified: { type: Boolean, default: false },
 })

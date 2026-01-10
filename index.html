@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register Test</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #111;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .box {
+      width: 350px;
+      background: #1c1c1c;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 6px;
+      border: none;
+    }
+    button {
+      background: #4caf50;
+      color: white;
+      cursor: pointer;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h3>📞 Telefon orqali register</h3>
+
+  <!-- STEP 1 -->
+  <div id="step1">
+    <input id="phone" placeholder="+998901234567" />
+    <button onclick="register()">Register</button>
+  </div>
+
+  <!-- STEP 2 -->
+  <div id="step2" class="hidden">
+    <input id="code" placeholder="Telegramdan kelgan kod" />
+    <button onclick="verifyCode()">Verify code</button>
+  </div>
+
+  <!-- STEP 3 -->
+  <div id="step3" class="hidden">
+    <input id="name" placeholder="Ism" />
+    <input id="surname" placeholder="Familiya" />
+    <button onclick="completeProfile()">Saqlash</button>
+  </div>
+
+  <p id="msg"></p>
+</div>
+
+<script>
+  const API = "http://localhost:8080";
+  let savedPhone = "";
+
+  function show(step) {
+    document.getElementById("step1").classList.add("hidden");
+    document.getElementById("step2").classList.add("hidden");
+    document.getElementById("step3").classList.add("hidden");
+    document.getElementById(step).classList.remove("hidden");
+  }
+
+  async function register() {
+    const phone = document.getElementById("phone").value;
+    savedPhone = phone;
+
+    const res = await fetch(`${API}/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone }),
+    });
+
+    const data = await res.json();
+    document.getElementById("msg").innerText = data.message || "OK";
+
+    if (res.ok) show("step2");
+  }
+
+  async function verifyCode() {
+    const code = document.getElementById("code").value;
+
+    const res = await fetch(`${API}/verify-code`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phone: savedPhone, code }),
+    });
+
+    const data = await res.json();
+    document.getElementById("msg").innerText = data.message;
+
+    if (res.ok) show("step3");
+  }
+
+  async function completeProfile() {
+    const name = document.getElementById("name").value;
+    const surname = document.getElementById("surname").value;
+
+    const res = await fetch(`${API}/complete-profile`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        phone: savedPhone,
+        name,
+        surname,
+      }),
+    });
+
+    const data = await res.json();
+    document.getElementById("msg").innerText = data.message;
+  }
+</script>
+
+</body>
+</html>
