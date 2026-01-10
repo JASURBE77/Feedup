@@ -5,8 +5,8 @@ const User = require("../models/user.model");
 const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find().populate("reviews");
-    const count = products.length
-    res.json({ success: true, products , count});
+    const count = products.length;
+    res.json({ success: true, products, count });
   } catch (err) {
     console.log(err);
   }
@@ -107,6 +107,31 @@ const addNewReview = async (req, res) => {
   } catch (err) {}
 };
 
+const getAllCategories = async (req, res) => {
+  try {
+    const categories = await Product.distinct("category");
+
+    res.json({ success: true, categories });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+const getProductByCategory = async (req, res) => {
+  try {
+    const { category } = req.params;
+
+    const products = await Product.find({ category })
+  
+    if (!products) {
+      return res.status(404).json({success:false , message:"There are no products in this category."})
+    }
+
+    res.json({success:true , products})
+
+  } catch (err) {}
+};
+
 const test = async (req, res) => {
   try {
     res.json(req.files);
@@ -119,4 +144,6 @@ module.exports = {
   getAllProducts,
   getProductById,
   addNewReview,
+  getAllCategories,
+  getProductByCategory
 };
