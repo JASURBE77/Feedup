@@ -5,7 +5,8 @@ const User = require("../models/user.model");
 const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find().populate("reviews");
-    res.json({ success: true, products });
+    const count = products.length
+    res.json({ success: true, products , count});
   } catch (err) {
     console.log(err);
   }
@@ -13,12 +14,13 @@ const getAllProducts = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
-    const { title, describe, price, category } = req.body;
+    const { title, describe, price, category, ingredients } = req.body;
 
-    if (!title || !describe || !price || !category) {
+    if (!title || !describe || !price || !category || !ingredients) {
       return res.status(400).json({
         success: false,
-        message: "title , describe , price , categroy - is required",
+        message:
+          "title , describe , price , categroy ,ingredients - is required",
       });
     }
 
