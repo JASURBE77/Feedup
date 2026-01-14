@@ -41,7 +41,7 @@ function startTelegramBot() {
         chatId,
         `🔐 Tasdiqlash kodi:\n\n*${code}*`,
         { parse_mode: "Markdown" }
-      );
+      ); 
     } catch (err) {
       console.error("BOT ERROR:", err);
       bot.sendMessage(chatId, "⚠️ Xatolik yuz berdi");
